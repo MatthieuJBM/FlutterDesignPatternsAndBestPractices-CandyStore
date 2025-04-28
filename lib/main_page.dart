@@ -45,42 +45,39 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  // TODO: Make this implementation more efficient via a Map
   void addToCart(ProductListItem item) {
-    CartListItem? existingItem = cartItemsMap[item.id];
-    if (existingItem != null) {
-      existingItem = CartListItem(
-        product: existingItem.product,
-        quantity: existingItem.quantity + 1,
-      );
-      cartItemsMap[item.id] = existingItem;
-      setState(() {});
-    } else {
-      setState(() {
-        final cartItem = CartListItem(
+    setState(() {
+      cartItemsMap.update(
+        item.id,
+        (existingItem) => CartListItem(
+          product: existingItem.product,
+          quantity: existingItem.quantity + 1,
+        ),
+        ifAbsent: () => CartListItem(
           product: item,
           quantity: 1,
-        );
-        cartItemsMap[item.id] = cartItem;
-      });
-    }
+        ),
+      );
+    });
   }
 
   void removeFromCart(CartListItem item) {
-    CartListItem? existingItem = cartItemsMap[item.product.id];
-    if (existingItem != null) {
+    setState(() {
+      final CartListItem? existingItem = cartItemsMap[item.product.id];
+      if (existingItem == null) return;
+
       if (existingItem.quantity > 1) {
-        existingItem = CartListItem(
-          product: existingItem.product,
-          quantity: existingItem.quantity - 1,
+        cartItemsMap.update(
+          item.product.id,
+          (existingItem) => CartListItem(
+            product: existingItem.product,
+            quantity: existingItem.quantity - 1,
+          ),
         );
-        cartItemsMap[item.product.id] = existingItem;
-        setState(() {});
       } else {
         cartItemsMap.remove(item.product.id);
-        setState(() {});
       }
-    }
+    });
   }
 
   void openCart() {
