@@ -11,7 +11,11 @@ class CartProvider extends InheritedWidget {
   }) : super(child: child);
 
   static CartNotifier of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<CartProvider>()!.cartNotifier;
+    final CartProvider? provider = context.dependOnInheritedWidgetOfExactType<CartProvider>();
+    if (provider == null) {
+      throw Exception('No CartProvider found in context');
+    }
+    return provider.cartNotifier;
   }
 
   @override
