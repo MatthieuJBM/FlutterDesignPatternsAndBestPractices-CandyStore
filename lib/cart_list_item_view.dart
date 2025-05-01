@@ -1,19 +1,18 @@
 import 'package:candy_store/cart_list_item.dart';
-import 'package:candy_store/cart_notifier.dart';
+import 'package:candy_store/cart_provider.dart';
 import 'package:flutter/material.dart';
 
 class CartListItemView extends StatelessWidget {
   final CartListItem item;
-  final CartNotifier cartNotifier;
 
   const CartListItemView({
     Key? key,
     required this.item,
-    required this.cartNotifier,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final cartNotifier = CartProvider.of(context);
     final product = item.product;
     final iconColor = Theme.of(context).colorScheme.secondary;
     return Container(

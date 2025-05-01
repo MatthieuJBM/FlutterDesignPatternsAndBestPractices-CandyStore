@@ -25,6 +25,8 @@ class CartNotifier extends ChangeNotifier {
         quantity: 1,
       ),
     );
+    _totalItems++;
+    _totalPrice += item.price;
 
     notifyListeners();
   }
@@ -44,6 +46,8 @@ class CartNotifier extends ChangeNotifier {
     } else {
       _items.remove(item.product.id);
     }
+    _totalItems--;
+    _totalPrice -= item.product.price;
 
     notifyListeners();
   }
