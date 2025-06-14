@@ -37,7 +37,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         ),
       );
       emit(state.copyWith(loadingResult: const DelayedResult.idle()));
-      await emit.onEach(
+      await emit.onEach<CartInfo>( /// For EACH item emitted by a stream do something.
         _cartModel.cartInfoStream,
         onData: (CartInfo cartInfo) {
           emit(

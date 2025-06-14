@@ -4,6 +4,8 @@ import 'package:candy_store/cart_page.dart';
 import 'package:candy_store/products_page.dart';
 import 'package:flutter/material.dart';
 
+import 'cart_view_model.dart';
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -14,7 +16,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    final cartViewModel = CartViewModelProvider.of(context);
+    final CartViewModel cartViewModel = CartViewModelProvider.of(context);
 
     return ListenableBuilder(
       listenable: cartViewModel,

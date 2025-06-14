@@ -28,7 +28,7 @@ class CartModel {
       );
 
   Future<void> addToCart(ProductListItem item) async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(milliseconds: 300));
     CartListItem? existingItem = _cartInfo.items[item.id];
     if (existingItem != null) {
       existingItem = CartListItem(
@@ -46,15 +46,21 @@ class CartModel {
     _cartInfo.totalItems++;
     _cartInfo.totalPrice += item.price;
 
+    /// By creating a new instance we are ensuring a new object instnace is emitted.
+    /// Flutter will know to rebuild widgets, because the data is new by identity (not just by content).
     final cartInfo = _cartInfo.copyWith(
       items: Map.unmodifiable(_cartInfo.items),
     );
 
+    /// The stream based on this StreamController will only rebuild if the stream emits a new object.
+    /// if we make a call like _cartInfoController.add(_cartInfo); and _cartInfo is the same instance
+    /// as before, some reactive systems like Streambuilder might not detect any change, even if
+    /// the data inside changed.
     _cartInfoController.add(cartInfo);
   }
 
   Future<void> removeFromCart(CartListItem item) async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(milliseconds: 300));
     // throw Exception('Could not remove item from cart')
     CartListItem? existingItem = _cartInfo.items[item.product.id];
     if (existingItem != null) {
