@@ -1,7 +1,6 @@
+import 'package:candy_store/cart_view_model_provider.dart';
 import 'package:candy_store/product_list_item.dart';
 import 'package:flutter/material.dart';
-
-import 'cart_view_model_provider.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   final ProductListItem product;
@@ -14,6 +13,7 @@ class ProductDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartViewModel = CartViewModelProvider.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(product.name),

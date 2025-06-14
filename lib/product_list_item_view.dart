@@ -1,8 +1,7 @@
+import 'package:candy_store/cart_view_model_provider.dart';
 import 'package:candy_store/product_details_page.dart';
 import 'package:candy_store/product_list_item.dart';
 import 'package:flutter/material.dart';
-
-import 'cart_view_model_provider.dart';
 
 class ProductListItemView extends StatelessWidget {
   final ProductListItem item;
@@ -15,6 +14,7 @@ class ProductListItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartViewModel = CartViewModelProvider.of(context);
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
