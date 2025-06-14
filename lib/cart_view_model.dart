@@ -1,23 +1,17 @@
 import 'package:candy_store/cart_list_item.dart';
 import 'package:candy_store/cart_model.dart';
+import 'package:candy_store/cart_state.dart';
+import 'package:candy_store/delayed_result.dart';
 import 'package:candy_store/product_list_item.dart';
-import 'package:flutter/material.dart';
-
-import 'cart_state.dart';
+import 'package:flutter/foundation.dart';
 
 class CartViewModel extends ChangeNotifier {
+  // TODO: Inject this in the DI chapter
   final CartModel _cartModel = CartModel();
-
-  CartState _state = CartState(
-    items: {},
-    totalPrice: 0,
-    totalItems: 0,
-  );
 
   CartViewModel() {
     _cartModel.cartInfoStream.listen((cartInfo) {
-      // TODO: Should actually copy the Map and not just the reference,
-      // todo: which we will do at the end of this chapter.
+      // TODO: Should actually copy the Map and not just the reference
       _state = _state.copyWith(
         items: cartInfo.items,
         totalPrice: cartInfo.totalPrice,
@@ -27,40 +21,47 @@ class CartViewModel extends ChangeNotifier {
     });
   }
 
+  CartState _state = const CartState(
+    items: {},
+    totalPrice: 0,
+    totalItems: 0,
+    loadingResult: DelayedResult.idle(),
+  );
+
   CartState get state => _state;
 
   Future<void> addToCart(ProductListItem item) async {
     try {
-      _state = _state.copyWith(isProcessing: true);
+      _state = _state.copyWith(loadingResult: const DelayedResult.inProgress());
       notifyListeners();
       await _cartModel.addToCart(item);
-      _state = _state.copyWith(isProcessing: false);
+      _state = _state.copyWith(loadingResult: const DelayedResult.idle());
     } on Exception catch (ex) {
-      _state = _state.copyWith(error: ex);
+      _state = _state.copyWith(loadingResult: DelayedResult.fromError(ex));
     }
     notifyListeners();
   }
 
   Future<void> removeFromCart(CartListItem item) async {
     try {
-      _state = _state.copyWith(isProcessing: true);
+      _state = _state.copyWith(loadingResult: const DelayedResult.inProgress());
       notifyListeners();
       await _cartModel.removeFromCart(item);
-      _state = _state.copyWith(isProcessing: false);
+      _state = _state.copyWith(loadingResult: const DelayedResult.idle());
     } on Exception catch (ex) {
-      _state = _state.copyWith(error: ex);
+      _state = _state.copyWith(loadingResult: DelayedResult.fromError(ex));
     }
     notifyListeners();
   }
 
   void clearError() {
-    _state = _state.copyWith(error: null);
+    _state = _state.copyWith(loadingResult: const DelayedResult.idle());
     notifyListeners();
   }
 
   @override
   void dispose() {
-    _cartModel.dispose();
     super.dispose();
+    _cartModel.dispose();
   }
 }
